@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Taskflow is a focused task planning workspace.">
+  <title>Taskflow | Plan with intention</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#main-content" aria-label="Taskflow home">
+        <span class="brand-mark" aria-hidden="true">T</span>
+        <span>Taskflow</span>
+      </a>
+      <div class="topbar-meta">
+        <span class="date-label" id="today-label"></span>
+        <button class="icon-button" id="clear-completed" type="button" title="Clear completed tasks" aria-label="Clear completed tasks">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6m4-6v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <section class="intro" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">Your daily command center</p>
+          <h1 id="page-title">Make room for<br><em>what matters.</em></h1>
+        </div>
+        <div class="progress-note" aria-live="polite">
+          <span class="progress-ring" id="progress-ring"><span id="progress-value">0%</span></span>
+          <span><strong id="progress-copy">A clean slate</strong><small>of today’s tasks complete</small></span>
+        </div>
+      </section>
+
+      <section class="workspace-grid" aria-label="Task workspace">
+        <aside class="sidebar">
+          <form class="task-form" id="task-form">
+            <div class="form-heading">
+              <span class="form-icon" aria-hidden="true">+</span>
+              <div><h2 id="form-title">Add a task</h2><p>What needs your attention?</p></div>
+            </div>
+            <label class="sr-only" for="task-title">Task title</label>
+            <input id="task-title" name="title" type="text" maxlength="120" placeholder="e.g. Finish project brief" autocomplete="off" required>
+            <div class="form-row">
+              <div class="field-group"><label for="task-category">Category</label><select id="task-category" name="category"><option value="work">Work</option><option value="personal">Personal</option><option value="health">Health</option><option value="learning">Learning</option></select></div>
+              <div class="field-group"><label for="task-priority">Priority</label><select id="task-priority" name="priority"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></div>
+            </div>
+            <div class="form-row">
+              <div class="field-group"><label for="task-date">Due date</label><input id="task-date" name="dueDate" type="date"></div>
+              <div class="field-group"><label for="task-recurrence">Repeat</label><select id="task-recurrence" name="recurrence"><option value="none">Does not repeat</option><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option></select></div>
+            </div>
+            <div class="form-actions"><button class="button button-primary" id="submit-task" type="submit">Add task <span aria-hidden="true">↗</span></button><button class="button button-quiet hidden" id="cancel-edit" type="button">Cancel</button></div>
+          </form>
+
+          <nav class="task-nav" aria-label="Task views">
+            <p class="nav-label">Views</p>
+            <button class="nav-item active" type="button" data-status="all" aria-pressed="true"><span class="nav-symbol">◌</span>All tasks <span class="nav-count" id="all-count">0</span></button>
+            <button class="nav-item" type="button" data-status="today" aria-pressed="false"><span class="nav-symbol">◷</span>Today <span class="nav-count" id="today-count">0</span></button>
+            <button class="nav-item" type="button" data-status="upcoming" aria-pressed="false"><span class="nav-symbol">◫</span>Upcoming <span class="nav-count" id="upcoming-count">0</span></button>
+            <button class="nav-item" type="button" data-status="completed" aria-pressed="false"><span class="nav-symbol">✓</span>Completed <span class="nav-count" id="completed-count">0</span></button>
+          </nav>
+          <div class="sidebar-footer"><span class="status-dot"></span><span>Saved locally in this browser</span></div>
+        </aside>
+
+        <section class="task-area" aria-labelledby="tasks-heading">
+          <div class="task-toolbar">
+            <div><p class="eyebrow" id="view-label">All tasks</p><h2 id="tasks-heading">Your list</h2></div>
+            <div class="toolbar-actions"><label class="search-box"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg><span class="sr-only">Search tasks</span><input id="search-input" type="search" placeholder="Search tasks"></label><label class="sort-box"><span class="sr-only">Sort tasks</span><select id="sort-select"><option value="created">Recently added</option><option value="due">Due date</option><option value="priority">Priority</option><option value="alphabetical">Alphabetical</option></select></label></div>
+          </div>
+          <div class="filter-row" aria-label="Filter tasks">
+            <button class="filter-chip active" type="button" data-filter="all" aria-pressed="true">Everything</button>
+            <button class="filter-chip" type="button" data-filter="high" aria-pressed="false">High priority</button>
+            <button class="filter-chip" type="button" data-filter="work" aria-pressed="false">Work</button>
+            <button class="filter-chip" type="button" data-filter="personal" aria-pressed="false">Personal</button>
+          </div>
+          <div class="task-list" id="task-list" aria-live="polite"></div>
+          <div class="empty-state hidden" id="empty-state"><span class="empty-mark">✦</span><h3 id="empty-title">Nothing here yet</h3><p id="empty-copy">Add your first task and give your day a little direction.</p><button class="button button-outline" id="empty-action" type="button">Create a task</button></div>
+        </section>
+      </section>
+    </main>
+    <div class="toast hidden" id="toast" role="status"><span id="toast-message"></span><button id="toast-action" type="button"></button></div>
+  </div>
+</body>
+</html>
